@@ -21,10 +21,5 @@ RetroMonsters is a simple PHP project to display a list of imaginary monsters. E
 2. Place the project in your web server's root (e.g., `htdocs` for XAMPP).
 3. Access the app at `http://localhost/RETRO_MONSTERS_2025/public/`
 
-## For Your Exam
-- The code is kept as simple as possible.
-- No advanced PHP functions or frameworks are used.
-- You can explain how the homepage, detail page, and navigation work.
-
 ---
 Good luck!
