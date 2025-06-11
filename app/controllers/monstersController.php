@@ -10,9 +10,18 @@ function indexAction(PDO $connexion)
     include_once '../app/models/monstersModel.php';
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
     $perPage = 3;
-    $monsters = \App\Models\MonstersModel\findAll($connexion, $page, $perPage);
-    $total = \App\Models\MonstersModel\countAll($connexion);
+    
+    // Get paginated latest monsters
+    $latestMonsters = \App\Models\MonstersModel\findAllLatest($connexion, $page, $perPage);
+    $total = \App\Models\MonstersModel\countAllLatest($connexion);
     $totalPages = ceil($total / $perPage);
+    
+    // Debug: Log pagination info
+    error_log("Current page: " . $page);
+    error_log("Total monsters: " . $total);
+    error_log("Total pages: " . $totalPages);
+    error_log("Monsters on current page: " . count($latestMonsters));
+    
     $randomMonster = \App\Models\MonstersModel\findRandom($connexion);
     global $content;
     ob_start();

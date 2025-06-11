@@ -86,15 +86,15 @@
         DERNIERS MONSTRES AJOUTÉS
     </h2>
     <!-- Monster Section -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <?php foreach ($monsters as $monster): ?>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="monsters-grid">
+        <?php foreach ($latestMonsters as $monster): ?>
             <!-- Monster Item -->
             <article class="relative bg-gray-700 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 monster-card"
                 data-monster-type="<?php echo $monster['type_name']; ?>">
                 <!-- Monster Image -->
                 <img src="/RETRO_MONSTERS_2025/public/images/<?php echo $monster['image_url']; ?>"
                     alt="<?php echo $monster['name']; ?>"
-                    class="w-full h-48 object-cover rounded-t-lg" />
+                    class="w-full h-52 object-cover rounded-t-lg" />
                 <!-- Monster Details -->
                 <div class="p-4">
                     <!-- Monster Name -->
@@ -138,19 +138,86 @@
 
     <!-- Pagination -->
     <?php if (isset($totalPages) && $totalPages > 1): ?>
-        <div style="text-align:center; margin-top:2rem;">
+        <div id="pagination-container" style="text-align:center; margin-top:2rem;">
             <?php $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; ?>
-            <!-- Previous Page -->
-            <?php if ($currentPage > 1): ?>
-                <a href="?page=<?php echo $currentPage - 1; ?>" 
-                class="prev-page">Précédent</a>
-            <?php endif; ?>
-            <!-- Next Page -->
-            <?php if ($currentPage < $totalPages): ?>
-                <a href="?page=<?php echo $currentPage + 1; ?>" 
-                class="next-page">Suivant</a>
-            <?php endif; ?>
+
+            <!-- Page Numbers -->
+            <div id="page-numbers" class="mb-4">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <button onclick="loadPage(<?php echo $i; ?>)"
+                        class="mx-1 px-3 py-1 rounded <?php echo $i === $currentPage ? 'bg-red-500 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'; ?>">
+                        <?php echo $i; ?>
+                    </button>
+                <?php endfor; ?>
+            </div>
+
+            <!-- Previous/Next Buttons -->
+            <div id="prev-next-buttons">
+                <?php if ($currentPage > 1): ?>
+                    <button onclick="loadPage(<?php echo $currentPage - 1; ?>)"
+                        class="prev-page">Précédent</button>
+                <?php endif; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <button onclick="loadPage(<?php echo $currentPage + 1; ?>)"
+                        class="next-page">Suivant</button>
+                <?php endif; ?>
+            </div>
         </div>
     <?php endif; ?>
-
 </section>
+
+<script>
+    function loadPage(page) {
+        // Show loading state
+        const mainContent = document.querySelector('main');
+        mainContent.style.opacity = '0.5';
+        
+        // Fetch the new page content
+        fetch(`?page=${page}`)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Update elements using switch case
+                const elements = ['monsters-grid', 'page-numbers', 'prev-next-buttons'];
+                elements.forEach(elementId => {
+                    switch(elementId) {
+                        case 'monsters-grid':
+                            updateElement(doc, '#monsters-grid');
+                            break;
+                        case 'page-numbers':
+                            updateElement(doc, '#page-numbers');
+                            break;
+                        case 'prev-next-buttons':
+                            updateElement(doc, '#prev-next-buttons');
+                            break;
+                        default:
+                            console.log('Unknown element:', elementId);
+                    }
+                });
+                
+                // Update URL without reload
+                const url = new URL(window.location);
+                url.searchParams.set('page', page);
+                window.history.pushState({}, '', url);
+                
+                // Restore opacity
+                mainContent.style.opacity = '1';
+            })
+            .catch(error => {
+                console.error('Error loading page:', error);
+                mainContent.style.opacity = '1';
+            });
+    }
+
+    // Helper function to update elements
+    function updateElement(doc, selector) {
+        const newContent = doc.querySelector(selector);
+        const currentContent = document.querySelector(selector);
+        if (newContent && currentContent) {
+            currentContent.innerHTML = newContent.innerHTML;
+        }
+    }
+</script>

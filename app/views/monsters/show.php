@@ -23,7 +23,14 @@
                 <div>
                     <strong class="text-white">Type:</strong>
                     <span class="text-gray-300">
-                        <?php echo $monster['type_id']; ?>
+                        <?php echo $monster['type_name']; ?>
+                    </span>
+                </div>
+                <!-- Monster Rarity -->
+                <div>
+                    <strong class="text-white">Rareté:</strong>
+                    <span class="text-gray-300">
+                        <?php echo $monster['rarity_name']; ?>
                     </span>
                 </div>
                 <!-- Monster PV -->
