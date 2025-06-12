@@ -4,12 +4,17 @@ use \App\Controllers\MonstersController;
 
 include_once '../app/controllers/monstersController.php';
 
-switch ($_GET['monsters']):
-    // ?monsters=show&id=x
-    case 'show':
-        MonstersController\showAction($connexion, $_GET['id']);
-        break;
-    default:
+// Vérifie si monsters est un ID numérique
+if (isset($_GET['monsters'])) {
+    if (is_numeric($_GET['monsters'])) {
+        MonstersController\showAction($connexion, (int)$_GET['monsters']);
+    } elseif ($_GET['monsters'] === 'search') {
+        MonstersController\searchAction($connexion, $_GET['search'] ?? '');
+    } elseif ($_GET['monsters'] === 'filters') {
+        MonstersController\filtersAction($connexion);
+    } else {
         MonstersController\indexAction($connexion);
-        break;
-endswitch;
+    }
+} else {
+    MonstersController\indexAction($connexion);
+}

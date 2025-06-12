@@ -7,4 +7,4 @@ require_once '../core/init.php';
 require_once '../app/routers/index.php';
 
 // Chargement du template
-require_once '../app/views/templates/default.php';
+require_once '../app/views/templates/index.php';

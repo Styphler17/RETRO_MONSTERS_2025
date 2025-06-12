@@ -3,11 +3,12 @@
 // ROUTES DES MONSTERS
 if (isset($_GET['monsters'])):
     include_once '../app/routers/monsters.php';
+// ROUTE DE LA PAGE D'ACCUEIL
+elseif (isset($_GET['page']) && $_GET['page'] === 'home'):
+    include_once '../app/controllers/pagesController.php';
+    \App\Controllers\PagesController\homeAction($connexion);
+// ROUTE PAR DEFAUT (page d'accueil)
 else:
-    // ROUTE PAR DEFAUT
-    // PATTERN: /
-    // CTRL: monstersController
-    // ACTION: index
-    include_once '../app/controllers/monstersController.php';
-    \App\Controllers\MonstersController\indexAction($connexion);
+    include_once '../app/controllers/pagesController.php';
+    \App\Controllers\PagesController\homeAction($connexion);
 endif;
